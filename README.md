@@ -86,7 +86,6 @@ Automatic colouring (green for positive counts, red for negative, yellow for zer
 
 ```
 [color][ ]
-
 ```
 
 Apply colour deadzone to prevent automatic colour flickering with counts such as [delta] (treats values >0.01 as 0): 
