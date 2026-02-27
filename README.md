@@ -23,6 +23,7 @@ In a display message / alert message, type:
 This inserts the default signal value (see “Default signal selection” below).
 
 Example: 
+
 "Speed: [prec 1][rate]km/s   Δ: [delta]"
 
 
@@ -70,9 +71,13 @@ You can select a specific signal for the following placeholders using:
 [sig <type> <name> <quality>]
 
 Examples:
+
 "[sig virtual signal-A][ ]"
+
 "[sig item iron-plate][ ]"
+
 "[sig item iron-plate legendary][ ]"
+
 "[sig fluid water][ ]"
 
 Quality is optional. If omitted, normal quality is assumed.
@@ -110,11 +115,13 @@ Note: this is not a true percentage conversion (no scaling); it’s a convenienc
 Use [color] or [colour] to colour the next placeholder automatically (green if positive, red if negative, yellow if ~zero (deadzone))
 
 Example:
+
 "[colour][sign][rate]/s"
 
 [dz 0.01] Configurable colour deadzone (treats values with abs(value) < 0.01 as zero for the auto-colour decision to prevent colour flickering)
 
 Example:
+
 "[dz 0.01][colour][delta]"
 
 
@@ -123,11 +130,13 @@ Example:
 You can manually colour anything using Factorio rich text tags:
 
 Example:
+
 "[color=orange]Speed: [rate]kms/s[/color]"
 
 This mod also supports UK spelling and will translate these on the fly:
 
 Example:
+
 "[colour=orange]Speed: [rate]km/s[/colour]"
 
 
