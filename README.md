@@ -31,6 +31,8 @@ Included setting option for default count display: exact or condensed SI (k, M, 
 [ ]
 ```
 
+---
+
 #  Placeholders
 
 | Placeholder | Meaning |
