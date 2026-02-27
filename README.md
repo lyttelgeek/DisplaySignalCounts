@@ -73,27 +73,37 @@ Included setting option for default count display: exact or condensed SI (k, M, 
 Display a specific signal count other than the default first condition. (If no quality is defined, common is assumed):
 
 ```
-[<type> <name> <quality>]
+[<type> <name> <quality>][ ]
 ```
 
 #  Colouring Counts
 
-Automatic (green for positive counts, red for negative, yellow for zero):
+Automatic colouring (green for positive counts, red for negative, yellow for zero):
 
 ```
-[colour][sign][rate]/s
-```
-
-Manual:
+[color][ ]
 
 ```
-[color=orange]Speed: [rate] km/s[/color]
+
+Apply colour deadzone to prevent automatic colour flickering with counts such as [delta] (treats values >0.01 as 0): 
+
+```
+[dz 0.01][color][delta]
+```
+
+Manual colouring:
+
+```
+[color=orange][ ][/color]
+[color=255,255,0][ ][/color]
 ```
 
 UK spelling supported:
 
 ```
-[colour=orange]Speed: [rate] km/s[/colour]
+[colour][ ]
+[colour=orange][ ][/colour]
+[colour=255,255,0][ ][/colour]
 ```
 
 ---
