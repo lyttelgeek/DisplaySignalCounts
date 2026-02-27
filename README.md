@@ -23,11 +23,11 @@ The panel’s displayed icon or conditional icon state does **not** affect the v
 #  Quick Start
 
 1. Connect your display panel or programmable speaker to the circuit network.
-2. In a display message or alert message, type:
+2. Set a signal condition.
+3. In a display message or alert message, type a placeholder:
 
 ```
 [ ]
-
 ```
 
 #  Placeholders
