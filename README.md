@@ -76,6 +76,8 @@ Display a specific signal count other than the default first condition. (If no q
 [<type> <name> <quality>][ ]
 ```
 
+---
+
 #  Colouring Counts
 
 Automatic colouring (green for positive counts, red for negative, yellow for zero):
