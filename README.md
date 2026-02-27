@@ -1,22 +1,22 @@
-# 📟 Display Signal Counts
+#  Display Signal Counts
 
 **Display Signal Counts** is a UPS-efficient Factorio 2.0 mod that lets
 you insert live circuit network signal values directly into:
 
--   📺 **Display panel messages**
--   🔊 **Programmable speaker alert messages**
+-    **Display panel messages**
+-    **Programmable speaker alert messages**
 
 It supports:
 
--   Multiple placeholders per message\
--   Inline signal selection (including quality)\
--   Useful transforms (`avg`, `rate`, `delta`, `min`, `max`, `abs`)\
--   Rounding and formatting helpers\
--   Automatic or manual colour rendering\
--   Seamless integration with icons and text\
--   Full support for both **color** and **colour** 😉
+-   Multiple placeholders per message
+-   Inline signal selection (including quality)
+-   Useful transforms (`avg`, `rate`, `delta`, `min`, `max`, `abs`)
+-   Rounding and formatting helpers
+-   Automatic or manual colour rendering
+-   Seamless integration with icons and text
+-   Full support for both **color** and **colour** spellings😉
 
-Counts are always sourced from the **incoming circuit network**.\
+Counts are always sourced from the **incoming circuit network**.
 The panel's displayed icon or conditional icon state does **not** affect
 the value shown.
 
@@ -25,7 +25,7 @@ highly informative alerts.
 
 ------------------------------------------------------------------------
 
-# 🚀 Quick Start
+#  Quick Start
 
 1.  Connect your display panel or programmable speaker to the circuit
     network.
@@ -44,7 +44,7 @@ Example:
 
 ------------------------------------------------------------------------
 
-# 🔎 Default Signal Selection
+#  Default Signal Selection
 
 If you do not explicitly select a signal with `[sig ...]`, the mod uses:
 
@@ -57,7 +57,7 @@ design).
 
 ------------------------------------------------------------------------
 
-# 🔢 Placeholders
+#  Placeholders
 
   Placeholder   Meaning
   ------------- -----------------------------
@@ -71,7 +71,7 @@ design).
 
 ------------------------------------------------------------------------
 
-# 🔄 Formatting Mode Overrides
+#  Formatting Mode Overrides
 
   Directive   Meaning
   ----------- --------------------------------------------
@@ -82,7 +82,7 @@ The default format comes from the mod's global setting.
 
 ------------------------------------------------------------------------
 
-# 🎯 Signal Selection (Inline)
+#  Signal Selection (Inline)
 
     [sig <type> <name> <quality>]
 
@@ -93,14 +93,14 @@ Examples:
     [sig item iron-plate legendary][ ]
     [sig fluid water][ ]
 
-Quality is optional.\
+Quality is optional.
 Return to the message's default signal with:
 
     [sig]
 
 ------------------------------------------------------------------------
 
-# 🛠 Modifiers
+#  Modifiers
 
 Modifiers apply **only to the immediately following placeholder** and
 can stack.
@@ -121,7 +121,7 @@ Example:
 
 ------------------------------------------------------------------------
 
-# 🎨 Colouring Counts
+#  Colouring Counts
 
 ## Automatic Colouring
 
@@ -131,8 +131,8 @@ Optional deadzone:
 
     [dz 0.01][colour][delta]
 
-Green → positive\
-Red → negative\
+Green → positive
+Red → negative
 Yellow → \~zero
 
 ## Manual Rich Text Colouring
@@ -145,15 +145,11 @@ UK spelling is supported and translated automatically:
 
 ------------------------------------------------------------------------
 
-# 🧩 Examples
+#  Examples
 
 ### Dashboard Panel
 
-    [virtual-signal=signal-speed]
-    v:[prec 1][ ]
-    avg:[prec 1][avg]
-    Δ:[sign][delta]
-    rate:[colour][sign][prec 2][rate]/s
+    [virtual-signal=signal-speed]    v:[prec 1][ ]    avg:[prec 1][avg]    Δ:[sign][delta]    rate:[colour][sign][prec 2][rate]/s
 
 ### Speaker Alert
 
@@ -165,7 +161,7 @@ UK spelling is supported and translated automatically:
 
 ------------------------------------------------------------------------
 
-# ⚙ Compatibility
+#  Compatibility
 
 -   Requires **Factorio 2.0+**
 -   Fully compatible with **Space Age**
@@ -173,18 +169,18 @@ UK spelling is supported and translated automatically:
 
 ------------------------------------------------------------------------
 
-# 🚦 Performance
+#  Performance
 
--   Lightweight per-entity updates\
--   Template preservation\
--   Edit grace window\
+-   Lightweight per-entity updates
+-   Template preservation
+-   Edit grace window
 -   Platform-aware rescanning
 
 ------------------------------------------------------------------------
 
-# 🔗 Links
+#  Links
 
-GitHub (source + releases):\
+GitHub (source + releases):
 https://github.com/lyttelgeek/DisplaySignalCounts
 
 ------------------------------------------------------------------------
@@ -193,19 +189,19 @@ https://github.com/lyttelgeek/DisplaySignalCounts
 
 ## 1.0.0 --- Initial Stable Release
 
--   Display panel support\
--   Programmable speaker support\
--   Multiple placeholders per message\
--   Inline signal selection (`[sig]`)\
--   Transforms: `abs`, `avg`, `delta`, `rate`, `min`, `max`\
--   Formatting helpers: `prec`, `clamp`, `floor`, `ceil`, `round`\
--   Formatting overrides: `si`, `exact`\
--   `[sign]` prefix helper (+ / − / ±)\
--   `[pct]` helper\
--   Automatic colouring (`[color]` / `[colour]`)\
--   Deadzone support (`[dz]`)\
--   Manual rich text colour compatibility\
--   UK spelling support\
--   Space Age compatibility\
--   Template preservation + edit grace window\
+-   Display panel support
+-   Programmable speaker support
+-   Multiple placeholders per message
+-   Inline signal selection (`[sig]`)
+-   Transforms: `abs`, `avg`, `delta`, `rate`, `min`, `max`
+-   Formatting helpers: `prec`, `clamp`, `floor`, `ceil`, `round`
+-   Formatting overrides: `si`, `exact`
+-   `[sign]` prefix helper (+ / − / ±)
+-   `[pct]` helper
+-   Automatic colouring (`[color]` / `[colour]`)
+-   Deadzone support (`[dz]`)
+-   Manual rich text colour compatibility
+-   UK spelling support
+-   Space Age compatibility
+-   Template preservation + edit grace window
 -   UPS-efficient architecture
