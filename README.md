@@ -1,9 +1,9 @@
-# 📟 Display Signal Counts
+#  Display Signal Counts
 
 **Display Signal Counts** is a UPS-efficient Factorio 2.0 mod that lets you insert live circuit network signal values directly into:
 
-- 📺 **Display panel messages**
-- 🔊 **Programmable speaker alert messages**
+-  **Display panel messages**
+-  **Programmable speaker alert messages**
 
 It supports:
 
@@ -13,14 +13,14 @@ It supports:
 - Rounding and formatting helpers
 - Automatic or manual colour rendering
 - Seamless integration with icons and text
-- Full support for both **color** and **colour** 😉
+- Full support for both **color** and **colour** spellings 😉
 
 Counts are always sourced from the **incoming circuit network**.
 The panel’s displayed icon or conditional icon state does **not** affect the value shown.
 
 ---
 
-# 🚀 Quick Start
+#  Quick Start
 
 1. Connect your display panel or programmable speaker to the circuit network.
 2. In a display message or alert message, type:
@@ -37,7 +37,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 ---
 
-# 🔢 Placeholders
+#  Placeholders
 
 | Placeholder | Meaning |
 |-------------|----------|
@@ -51,7 +51,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 ---
 
-# 🔄 Formatting Mode Overrides
+#  Formatting Mode Overrides
 
 | Directive | Meaning |
 |-----------|----------|
@@ -60,7 +60,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 ---
 
-# 🛠 Modifiers
+#  Modifiers
 
 | Modifier | Meaning |
 |----------|----------|
@@ -74,7 +74,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 ---
 
-# 🎨 Colouring Counts
+#  Colouring Counts
 
 Automatic:
 
@@ -96,14 +96,14 @@ UK spelling supported:
 
 ---
 
-# ⚙ Compatibility
+#  Compatibility
 
 - Requires **Factorio 2.0+**
 - Space Age compatible (not required)
 
 ---
 
-# 📦 Changelog
+#  Changelog
 
 ## 1.0.0
 
