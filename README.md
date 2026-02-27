@@ -17,6 +17,7 @@ It supports:
 
 Counts are always sourced from the **incoming circuit network**.
 The panel’s displayed icon or conditional icon state does **not** affect the value shown.
+Included setting option for default count display, exact or condensed SI (k, M, G etc.)
 
 ---
 
