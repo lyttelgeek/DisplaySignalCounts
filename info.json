@@ -1,0 +1,12 @@
+{
+  "name": "DisplaySignalCounts",
+  "version": "1.0.0",
+  "title": "Display Signal Counts",
+  "author": "Nzungu",
+  "factorio_version": "2.0",
+  "homepage": "https://github.com/lyttelgeek/DisplaySignalCounts",
+  "description": "Allows highly configurable circuit network signal counts to be added to display panel messages and programmable speaker alerts.",
+  "dependencies": [
+    "base >= 2.0.0"
+  ]
+}
