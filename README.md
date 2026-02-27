@@ -27,15 +27,8 @@ The panel’s displayed icon or conditional icon state does **not** affect the v
 
 ```
 [ ]
-```
-
-Example:
 
 ```
-Speed: [prec 1][rate] km/s   Δ: [delta]
-```
-
----
 
 #  Placeholders
 
@@ -60,7 +53,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 ---
 
-#  Modifiers
+#  Modifiers (stackable, only affect the following placeholder)
 
 | Modifier | Meaning |
 |----------|----------|
@@ -76,7 +69,7 @@ Speed: [prec 1][rate] km/s   Δ: [delta]
 
 #  Colouring Counts
 
-Automatic:
+Automatic (green for positive counts, red for negative, yellow for zero):
 
 ```
 [colour][sign][rate]/s
