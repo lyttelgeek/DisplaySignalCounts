@@ -121,3 +121,5 @@ UK spelling supported:
 #  Current Version
 
 [v1.0.0 Initial Stable Release](https://github.com/lyttelgeek/DisplaySignalCounts/releases/tag/1.0.0-Initial_Release)
+
+---
