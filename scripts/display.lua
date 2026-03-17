@@ -12,6 +12,14 @@ local function get_setting_bool(name, default)
     return default
 end
 
+local function is_wdp_panel(entity)
+    return entity
+        and entity.valid
+        and entity.type == "display-panel"
+        and entity.name
+        and entity.name:find("^widescreen%-display%-panel")
+end
+
 -- force_mode: nil | "si" | "exact"
 local function format_value(v, force_mode)
     local want_si
@@ -120,7 +128,6 @@ local function normalize_directive_token(s)
     return s
 end
 
--- letters-only key from RAW bracket content (bulletproof)
 local function raw_letters_only_key(raw)
     if not raw then return "" end
     local s = raw:lower()
@@ -214,6 +221,37 @@ end
 
 local function build_signal_map_single_source(entity, behavior)
     local map = {}
+
+    --------------------------------------------------
+    -- WidescreenDisplayPanels remote integration
+    --------------------------------------------------
+    if entity
+        and entity.valid
+        and entity.type == "display-panel"
+        and entity.name
+        and entity.name:find("^widescreen%-display%-panel")
+        and remote
+        and remote.interfaces
+        and remote.interfaces["WidescreenDisplayPanels"]
+        and remote.interfaces["WidescreenDisplayPanels"].get_merged_signals
+    then
+        local ok_remote, sigs = pcall(function()
+            return remote.call("WidescreenDisplayPanels", "get_merged_signals", entity)
+        end)
+
+        if ok_remote and type(sigs) == "table" then
+            for i = 1, #sigs do
+                merge_row(map, sigs[i])
+            end
+            return map
+        elseif ok_remote then
+            return map
+        end
+    end
+
+    --------------------------------------------------
+    -- Vanilla / default collection paths
+    --------------------------------------------------
 
     local ok_r, net_r = pcall(function() return behavior and behavior.get_circuit_network(defines.wire_connector_id.circuit_red) end)
     local ok_g, net_g = pcall(function() return behavior and behavior.get_circuit_network(defines.wire_connector_id.circuit_green) end)
@@ -426,7 +464,6 @@ local function parse_color_modifier(norm)
     return { mode = "auto" }
 end
 
--- Allow Factorio rich-text [colour=...] and [/colour] by converting to [color=...] and [/color]
 local function normalize_rich_text_tag(tag_inside)
     if type(tag_inside) ~= "string" then return tag_inside end
     if tag_inside:sub(1, 6) == "colour" then
@@ -445,18 +482,17 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
     local i = 1
     local len = #template
 
-    -- modifiers (apply to NEXT numeric placeholder only)
     local pending_prec = nil
     local pending_clamp_a = nil
     local pending_clamp_b = nil
     local pending_sign = false
-    local pending_round = nil       -- "floor" / "ceil" / "round"
-    local pending_fmt = nil         -- nil | "si" | "exact"
-    local pending_pct = false       -- clamp 0..100 + append %
+    local pending_round = nil
+    local pending_fmt = nil
+    local pending_pct = false
 
-    local pending_color_mode = nil  -- nil | "auto" | "manual"
+    local pending_color_mode = nil
     local pending_color_value = nil
-    local pending_color_deadzone = nil -- only used for auto
+    local pending_color_deadzone = nil
 
     local current_sigkey = default_sigkey
     local metrics_cache = {}
@@ -528,7 +564,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
     local function emit_number(vnum)
         vnum = tonumber(vnum) or 0
 
-        -- pct helper: clamp 0..100 + append %
         if pending_pct then
             pending_clamp_a = 0
             pending_clamp_b = 100
@@ -545,8 +580,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
         end
 
         local already_negative = (num_str:sub(1, 1) == "-")
-
-        -- [sign]: prepend + for positives, ± for zero. negatives already show "-".
         local sign_prefix = ""
         if pending_sign and not already_negative then
             if vnum > 0 then
@@ -600,8 +633,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
 
         local inside_raw = template:sub(lb + 1, rb - 1)
 
-        -- Factorio rich-text ([color=...], [/color], etc): preserve literally.
-        -- Also rewrite [colour=...] and [/colour] to Factorio's [color=...] / [/color].
         if inside_raw:find("=", 1, true) or inside_raw:find("^/") then
             out[#out + 1] = "[" .. normalize_rich_text_tag(inside_raw) .. "]"
             i = rb + 1
@@ -618,7 +649,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
         local norm = normalize_directive_token(inside_raw)
         local key = first_word_letters_only_key(norm)
 
-        -- [sig] or [sig ...] (IMPORTANT: do NOT swallow [sign])
         if norm == "sig" or norm:find("^sig%s") then
             local mode, sigkey = parse_sig_modifier(norm)
             if mode == "reset" then
@@ -630,7 +660,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
             goto continue
         end
 
-        -- standalone deadzone modifier: [dz 0.01]
         local dz_only = norm:match("^dz%s+(-?%d+%.?%d*)$")
         if dz_only then
             pending_color_deadzone = tonumber(dz_only)
@@ -638,7 +667,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
             goto continue
         end
 
-        -- modifiers
         local nprec = norm:match("^prec%s*(-?%d+)$")
         if nprec then pending_prec = tonumber(nprec) or 0; i = rb + 1; goto continue end
 
@@ -668,7 +696,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
                     pending_color_value = spec.color
                 else
                     pending_color_mode = "auto"
-                    -- allow prior [dz N] to apply if set
                     if spec.deadzone ~= nil then
                         pending_color_deadzone = spec.deadzone
                     end
@@ -683,7 +710,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
         if rawkey == "si" or key == "si" then pending_fmt = "si"; i = rb + 1; goto continue end
         if rawkey == "exact" or key == "exact" then pending_fmt = "exact"; i = rb + 1; goto continue end
 
-        -- outputs
         if rawkey == "abs" or key == "abs" then emit_from_kind("abs"); i = rb + 1; goto continue end
         if rawkey == "delta" or key == "delta" then emit_from_kind("delta"); i = rb + 1; goto continue end
         if rawkey == "rate" or key == "rate" then emit_from_kind("rate"); i = rb + 1; goto continue end
@@ -691,7 +717,6 @@ local function render_template(template, unit, msg_idx, sigmap, default_sigkey)
         if rawkey == "min" or key == "min" then emit_from_kind("min"); i = rb + 1; goto continue end
         if rawkey == "max" or key == "max" then emit_from_kind("max"); i = rb + 1; goto continue end
 
-        -- unknown: keep literal
         out[#out + 1] = "[" .. inside_raw .. "]"
         i = rb + 1
 
@@ -707,9 +732,126 @@ end
 -- UPDATE: DISPLAY PANEL
 --------------------------------------------------
 
+local function update_wdp_panel(entity)
+    if not (entity and entity.valid) then return end
+    if not is_wdp_panel(entity) then return end
+
+    if not (remote
+        and remote.interfaces
+        and remote.interfaces["WidescreenDisplayPanels"]
+        and remote.interfaces["WidescreenDisplayPanels"].get_segment_templates
+        and remote.interfaces["WidescreenDisplayPanels"].set_rule_message
+        and remote.interfaces["WidescreenDisplayPanels"].get_merged_signals)
+    then
+        return
+    end
+
+    local unit = entity.unit_number
+    if not unit then return end
+
+    storage.wdp_templates = storage.wdp_templates or {}
+    storage._sigd_wdp_last_rendered = storage._sigd_wdp_last_rendered or {}
+
+    local grace = grace_store("_sigd_wdp_edit_grace")
+
+    storage.wdp_templates[unit] = storage.wdp_templates[unit] or {}
+    storage._sigd_wdp_last_rendered[unit] = storage._sigd_wdp_last_rendered[unit] or {}
+
+    local templates = storage.wdp_templates[unit]
+    local last_rendered = storage._sigd_wdp_last_rendered[unit]
+
+    local ok_sigs, sig_rows = pcall(function()
+        return remote.call("WidescreenDisplayPanels", "get_merged_signals", entity)
+    end)
+    if not ok_sigs or type(sig_rows) ~= "table" then return end
+
+    local sigmap = {}
+    for i = 1, #sig_rows do
+        merge_row(sigmap, sig_rows[i])
+    end
+
+    local ok_templates, segments = pcall(function()
+        return remote.call("WidescreenDisplayPanels", "get_segment_templates", entity)
+    end)
+    if not ok_templates or type(segments) ~= "table" then return end
+
+    for seg_idx, rules in pairs(segments) do
+        templates[seg_idx] = templates[seg_idx] or {}
+        last_rendered[seg_idx] = last_rendered[seg_idx] or {}
+
+        if type(rules) == "table" then
+            for rule_idx, rule in pairs(rules) do
+                if type(rule) == "table" then
+                    local current_text = rule.message
+                    if current_text == nil or type(current_text) ~= "string" then
+                        goto continue_rule
+                    end
+
+                    local lr = last_rendered[seg_idx][rule_idx]
+                    local grace_key = seg_idx * 1000 + rule_idx
+
+                    if lr ~= nil and current_text ~= lr then
+                        start_grace(grace, unit, grace_key)
+                        if has_placeholder(current_text) then
+                            templates[seg_idx][rule_idx] = current_text
+                        else
+                            templates[seg_idx][rule_idx] = nil
+                        end
+                        last_rendered[seg_idx][rule_idx] = current_text
+                        goto continue_rule
+                    end
+
+                    if in_grace(grace, unit, grace_key) then
+                        last_rendered[seg_idx][rule_idx] = current_text
+                        goto continue_rule
+                    end
+
+                    if templates[seg_idx][rule_idx] == nil then
+                        if has_placeholder(current_text) then
+                            templates[seg_idx][rule_idx] = current_text
+                        else
+                            last_rendered[seg_idx][rule_idx] = current_text
+                            goto continue_rule
+                        end
+                    end
+
+                    local template = templates[seg_idx][rule_idx]
+                    if type(template) ~= "string" then
+                        templates[seg_idx][rule_idx] = current_text
+                        template = templates[seg_idx][rule_idx]
+                    end
+
+                    if not has_placeholder(template) then
+                        templates[seg_idx][rule_idx] = nil
+                        last_rendered[seg_idx][rule_idx] = current_text
+                        goto continue_rule
+                    end
+
+                    local default_sigkey = rule.first_signal and make_sigkey(rule.first_signal) or nil
+                    local rendered = render_template(template, unit, grace_key, sigmap, default_sigkey)
+
+                    if current_text ~= rendered then
+                        pcall(function()
+                            remote.call("WidescreenDisplayPanels", "set_rule_message", entity, seg_idx, rule_idx, rendered)
+                        end)
+                    end
+
+                    last_rendered[seg_idx][rule_idx] = rendered
+                end
+
+                ::continue_rule::
+            end
+        end
+    end
+end
+
 local function update_display_panel(entity)
     if not (entity and entity.valid) then return end
     if entity.type ~= "display-panel" then return end
+
+    if is_wdp_panel(entity) then
+        return update_wdp_panel(entity)
+    end
 
     local behavior = entity.get_or_create_control_behavior()
     if not behavior then return end
@@ -745,7 +887,6 @@ local function update_display_panel(entity)
 
         local lr = last_rendered[idx]
 
-        -- detect user edit and adopt template (with grace window)
         if lr ~= nil and current_text ~= lr then
             start_grace(grace, unit, idx)
             if has_placeholder(current_text) then
@@ -762,7 +903,6 @@ local function update_display_panel(entity)
             goto continue
         end
 
-        -- adopt initial template only when placeholders exist
         if templates[idx] == nil then
             if has_placeholder(current_text) then
                 templates[idx] = current_text
@@ -830,7 +970,6 @@ local function update_speaker(entity)
     local template = storage.speaker_templates[unit]
     local lr = storage._sigd_speaker_last_rendered[unit]
 
-    -- detect user edit and adopt template (with grace window)
     if lr ~= nil and current_text ~= lr then
         start_grace(grace, unit, 1)
         if has_placeholder(current_text) then
