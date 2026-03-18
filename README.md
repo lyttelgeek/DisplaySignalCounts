@@ -76,7 +76,7 @@ Included global setting option for default count display: exact or condensed SI 
 Display a specific signal count other than the default first condition. (If no quality is defined, common is assumed):
 
 ```
-[<type> <name> <quality>][ ]
+[sig <type> <name> <quality>][ ]
 ```
 
 ---
