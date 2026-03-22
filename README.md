@@ -48,7 +48,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-##  Formatting Mode Overrides
+##  Formatting Mode Overrides (only affects following placeholder)
 
 | Directive | Meaning |
 |-----------|----------|
@@ -71,7 +71,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-##  Manual inline signal selection (only affects the following placeholder)
+##  Manual inline signal selection (affects all following placeholders until another '[sig ...]' is used or is reset with '[sig]')
 
 Display a specific signal count other than the default first condition. (If no quality is defined, common is assumed):
 
