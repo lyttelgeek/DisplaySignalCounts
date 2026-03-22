@@ -22,7 +22,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-#  Quick Start
+##  Quick Start
 
 1. Connect your display panel or programmable speaker to the circuit network.
 2. Set a signal condition.
@@ -34,7 +34,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-#  Placeholders
+##  Placeholders
 
 | Placeholder | Meaning |
 |-------------|----------|
@@ -48,7 +48,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-#  Formatting Mode Overrides
+##  Formatting Mode Overrides
 
 | Directive | Meaning |
 |-----------|----------|
@@ -57,7 +57,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-#  Modifiers (stackable, only affects the following placeholder)
+##  Modifiers (stackable, only affects the following placeholder)
 
 | Modifier | Meaning |
 |----------|----------|
@@ -71,7 +71,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-#  Manual inline signal selection (only affects the following placeholder)
+##  Manual inline signal selection (only affects the following placeholder)
 
 Display a specific signal count other than the default first condition. (If no quality is defined, common is assumed):
 
@@ -81,7 +81,7 @@ Display a specific signal count other than the default first condition. (If no q
 
 ---
 
-#  Colouring Counts
+##  Colouring Counts
 
 Automatic colouring (green for positive counts, red for negative, yellow for zero):
 
@@ -112,14 +112,14 @@ UK spelling supported:
 
 ---
 
-#  Compatibility
+##  Compatibility
 
 - Requires **Factorio 2.0+**
 - Space Age compatible (not required)
 
 ---
 
-#  Current Version
+##  Current Version
 
 [v1.0.0 Initial Standalone Release](https://github.com/lyttelgeek/DisplaySignalCounts/releases/tag/1.0.0-Initial_Release)
 
