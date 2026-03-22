@@ -1,42 +1,53 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+---------------------------------------------------------------------------------------------------
+
+Fixes:
+- Fixed inline signal selector breaking when WDP is not installed
+
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 ---------------------------------------------------------------------------------------------------
-Date: 2026-02-28
-  Additions:
-    - Support for Display Panels
-    - Support for Programmable Speakers
-    - Multiple placeholders per message
-    - Inline signal selection via [sig <type> <name> <quality>]
-    - Signal quality support
-    - Derived value placeholders:
-      - [abs]
-      - [avg]
-      - [delta]
-      - [rate]
-      - [min]
-      - [max]
-    - Formatting helpers:
-      - [prec N]
-      - [clamp A B]
-      - [floor]
-      - [ceil]
-      - [round]
-    - Formatting overrides:
-      - [exact]
-      - [si]
-    - [sign] helper (+ / − / ± prefix support)
-    - [pct] helper (clamp 0–100 and append %)
-    - Automatic colouring via [color] / [colour]
-    - Colour deadzone support via [dz]
-    - Manual rich text colour support
-    - UK spelling support for colour directives and tags
-    - Template preservation system
-    - Edit grace window to prevent overwriting manual edits
-    - Space Age compatibility (not required)
-    - Platform-aware rescanning
-    - UPS-efficient update architecture
 
-  Info:
-    - Counts are sourced strictly from the incoming circuit network.
-    - Panel icon state does not affect value calculation.
-    - If no signal is specified, placeholders evaluate to 0 by design.
+Added:
+- Support for Display Panels
+- Support for Programmable Speakers
+- Multiple placeholders per message
+- Inline signal selection via [sig <type> <name> <quality>]
+- Signal quality support
+- Derived value placeholders:
+  - [abs]
+  - [avg]
+  - [delta]
+  - [rate]
+  - [min]
+  - [max]
+- Formatting helpers:
+  - [prec N]
+  - [clamp A B]
+  - [floor]
+  - [ceil]
+  - [round]
+- Formatting overrides:
+  - [exact]
+  - [si]
+- [sign] helper (+ / − / ± prefix support)
+- [pct] helper (clamp 0–100 and append %)
+- Automatic colouring via [color] / [colour]
+- Colour deadzone support via [dz]
+- Manual rich text colour support
+- UK spelling support for colour directives and tags
+- Template preservation system
+- Edit grace window to prevent overwriting manual edits
+- Space Age compatibility (not required)
+- Platform-aware rescanning
+- UPS-efficient update architecture
+
+Notes:
+- Counts are sourced strictly from the incoming circuit network.
+- Panel icon state does not affect value calculation.
+- If no signal is specified, placeholders evaluate to 0 by design.
+
+
+---------------------------------------------------------------------------------------------------

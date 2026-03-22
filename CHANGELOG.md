@@ -1,8 +1,9 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [1.0.1] - Inline selector hotfix
 
-This project follows semantic versioning (MAJOR.MINOR.PATCH).
+### Fixes
+- Fixed inline signal selector breaking when WDP is not installed
 
 ---
 

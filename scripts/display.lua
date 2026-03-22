@@ -243,7 +243,10 @@ local function build_signal_map_single_source(entity, behavior)
             for i = 1, #sigs do
                 merge_row(map, sigs[i])
             end
-            return map
+
+            for _, _ in pairs(map) do
+                return map
+            end
         elseif ok_remote then
             return map
         end
