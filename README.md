@@ -121,6 +121,6 @@ UK spelling supported:
 
 ##  Current Version
 
-[v1.0.1 Inline Selector Hotfix](https://github.com/lyttelgeek/DisplaySignalCounts/releases/tag/1.0.1-Inline-Hotfix)
+[v1.0.1 Internal Cleanup](https://github.com/lyttelgeek/DisplaySignalCounts/releases/tag/1.0.2-Internal_Cleanup)
 
 ---
