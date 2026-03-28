@@ -1,4 +1,24 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+---------------------------------------------------------------------------------------------------
+
+Fixed:
+- Displays silently stopping after a save/reload cycle — caused by the update loop not being
+  re-registered on on_load
+- Space Age detection now checks active mods directly rather than relying solely on platform
+  surface name heuristics, so detection works before the player has launched a rocket
+
+Changed:
+- Update interval reduced from 30 ticks to 2 ticks for more responsive live panels
+- Settings changes at runtime now correctly propagate to the update loop without requiring a reload
+- All internal storage keys and setting names updated from the sigd prefix (inherited from Signal
+  Display) to dsc
+- Existing saves are automatically migrated on load, no data is lost
+- Removed development log spam
+
+
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 ---------------------------------------------------------------------------------------------------
 

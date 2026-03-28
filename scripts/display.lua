@@ -28,7 +28,7 @@ local function format_value(v, force_mode)
     elseif force_mode == "exact" then
         want_si = false
     else
-        want_si = get_setting_bool("sigd-show-formatted-number", true)
+        want_si = get_setting_bool("dsc-show-formatted-number", true)
     end
 
     if want_si then
@@ -337,8 +337,8 @@ local AVG_TAU_SECONDS = 5
 local MINMAX_WINDOW_SECONDS = 10
 
 local function stats_root()
-    storage._sigd_stats = storage._sigd_stats or {}
-    return storage._sigd_stats
+    storage._dsc_stats = storage._dsc_stats or {}
+    return storage._dsc_stats
 end
 
 local function get_stat_slot(root, unit, idx, key)
@@ -753,15 +753,15 @@ local function update_wdp_panel(entity)
     if not unit then return end
 
     storage.wdp_templates = storage.wdp_templates or {}
-    storage._sigd_wdp_last_rendered = storage._sigd_wdp_last_rendered or {}
+    storage._dsc_wdp_last_rendered = storage._dsc_wdp_last_rendered or {}
 
-    local grace = grace_store("_sigd_wdp_edit_grace")
+    local grace = grace_store("_dsc_wdp_edit_grace")
 
     storage.wdp_templates[unit] = storage.wdp_templates[unit] or {}
-    storage._sigd_wdp_last_rendered[unit] = storage._sigd_wdp_last_rendered[unit] or {}
+    storage._dsc_wdp_last_rendered[unit] = storage._dsc_wdp_last_rendered[unit] or {}
 
     local templates = storage.wdp_templates[unit]
-    local last_rendered = storage._sigd_wdp_last_rendered[unit]
+    local last_rendered = storage._dsc_wdp_last_rendered[unit]
 
     local ok_sigs, sig_rows = pcall(function()
         return remote.call("WidescreenDisplayPanels", "get_merged_signals", entity)
@@ -863,17 +863,17 @@ local function update_display_panel(entity)
     if not ok_msgs or type(messages) ~= "table" then return end
 
     storage.display_templates = storage.display_templates or {}
-    storage._sigd_last_rendered = storage._sigd_last_rendered or {}
+    storage._dsc_last_rendered = storage._dsc_last_rendered or {}
 
-    local grace = grace_store("_sigd_panel_edit_grace")
+    local grace = grace_store("_dsc_panel_edit_grace")
 
     local unit = entity.unit_number
 
     storage.display_templates[unit] = storage.display_templates[unit] or {}
-    storage._sigd_last_rendered[unit] = storage._sigd_last_rendered[unit] or {}
+    storage._dsc_last_rendered[unit] = storage._dsc_last_rendered[unit] or {}
 
     local templates = storage.display_templates[unit]
-    local last_rendered = storage._sigd_last_rendered[unit]
+    local last_rendered = storage._dsc_last_rendered[unit]
 
     local sigmap = build_signal_map_single_source(entity, behavior)
 
@@ -963,15 +963,15 @@ local function update_speaker(entity)
     local current_text = ap.alert_message
     if current_text == nil or type(current_text) ~= "string" then return end
 
-    local grace = grace_store("_sigd_speaker_edit_grace")
+    local grace = grace_store("_dsc_speaker_edit_grace")
 
     local unit = entity.unit_number
 
     storage.speaker_templates = storage.speaker_templates or {}
-    storage._sigd_speaker_last_rendered = storage._sigd_speaker_last_rendered or {}
+    storage._dsc_speaker_last_rendered = storage._dsc_speaker_last_rendered or {}
 
     local template = storage.speaker_templates[unit]
-    local lr = storage._sigd_speaker_last_rendered[unit]
+    local lr = storage._dsc_speaker_last_rendered[unit]
 
     if lr ~= nil and current_text ~= lr then
         start_grace(grace, unit, 1)
@@ -982,12 +982,12 @@ local function update_speaker(entity)
             storage.speaker_templates[unit] = nil
             template = nil
         end
-        storage._sigd_speaker_last_rendered[unit] = current_text
+        storage._dsc_speaker_last_rendered[unit] = current_text
         return
     end
 
     if in_grace(grace, unit, 1) then
-        storage._sigd_speaker_last_rendered[unit] = current_text
+        storage._dsc_speaker_last_rendered[unit] = current_text
         return
     end
 
@@ -996,7 +996,7 @@ local function update_speaker(entity)
             storage.speaker_templates[unit] = current_text
             template = current_text
         else
-            storage._sigd_speaker_last_rendered[unit] = current_text
+            storage._dsc_speaker_last_rendered[unit] = current_text
             return
         end
     end
@@ -1008,7 +1008,7 @@ local function update_speaker(entity)
 
     if not has_placeholder(template) then
         storage.speaker_templates[unit] = nil
-        storage._sigd_speaker_last_rendered[unit] = current_text
+        storage._dsc_speaker_last_rendered[unit] = current_text
         return
     end
 
@@ -1024,7 +1024,7 @@ local function update_speaker(entity)
         pcall(function() entity.alert_parameters = ap end)
     end
 
-    storage._sigd_speaker_last_rendered[unit] = rendered
+    storage._dsc_speaker_last_rendered[unit] = rendered
 end
 
 --------------------------------------------------

@@ -1,12 +1,8 @@
-local display = require("scripts.display")
+local dsc_events = require("scripts.events")
 
 --------------------------------------------------
--- STORAGE
+-- ENTITY TRACKING
 --------------------------------------------------
-
-local function ensure_storage()
-    storage.displays = storage.displays or {}
-end
 
 local function is_display_entity(e)
     return e
@@ -17,8 +13,7 @@ end
 
 local function add_display(e)
     if not is_display_entity(e) then return end
-    ensure_storage()
-
+    storage.displays = storage.displays or {}
     local si = e.surface.index
     storage.displays[si] = storage.displays[si] or {}
     storage.displays[si][e.unit_number] = e
@@ -27,7 +22,6 @@ end
 local function remove_display(e)
     if not is_display_entity(e) then return end
     if not storage.displays then return end
-
     local si = e.surface.index
     if storage.displays[si] then
         storage.displays[si][e.unit_number] = nil
@@ -35,50 +29,13 @@ local function remove_display(e)
 end
 
 --------------------------------------------------
--- FULL RESCAN
---------------------------------------------------
-
-local function rescan_all_surfaces()
-    ensure_storage()
-
-    local total = 0
-
-    for _, surface in pairs(game.surfaces) do
-        local si = surface.index
-        storage.displays[si] = storage.displays[si] or {}
-
-        local found = surface.find_entities_filtered{
-            type = {"display-panel", "programmable-speaker"}
-        }
-
-        local added = 0
-
-        for _, e in pairs(found) do
-            if is_display_entity(e) and not storage.displays[si][e.unit_number] then
-                storage.displays[si][e.unit_number] = e
-                added = added + 1
-            end
-        end
-
-        local count = 0
-        for _, _ in pairs(storage.displays[si]) do
-            count = count + 1
-        end
-
-        total = total + count
-
-        log(("sigd: scan surface=%s idx=%d now=%d added=%d")
-            :format(surface.name, si, count, added))
-    end
-
-    log(("sigd: scan done total_tracked=%d"):format(total))
-end
-
---------------------------------------------------
--- SPACE AGE DETECTION (platform surface check)
+-- SPACE AGE DETECTION
 --------------------------------------------------
 
 local function detect_space_age()
+    if script.active_mods and script.active_mods["space-age"] then
+        return true
+    end
     for _, surface in pairs(game.surfaces) do
         if surface.name and surface.name:find("^platform%-") then
             return true
@@ -88,21 +45,71 @@ local function detect_space_age()
 end
 
 --------------------------------------------------
--- INIT
+-- STORAGE MIGRATION (sigd -> dsc)
+--------------------------------------------------
+
+local MIGRATE_KEYS = {
+    "_sigd_stats",
+    "_sigd_has_sa",
+    "_sigd_last_rendered",
+    "_sigd_wdp_last_rendered",
+    "_sigd_speaker_last_rendered",
+    "_sigd_panel_edit_grace",
+    "_sigd_wdp_edit_grace",
+    "_sigd_speaker_edit_grace",
+}
+
+local function migrate_storage()
+    local migrated = 0
+    for _, old_key in pairs(MIGRATE_KEYS) do
+        if storage[old_key] ~= nil then
+            local new_key = old_key:gsub("^_sigd", "_dsc")
+            if storage[new_key] == nil then
+                storage[new_key] = storage[old_key]
+                migrated = migrated + 1
+            end
+            storage[old_key] = nil
+        end
+    end
+    -- Wipe any stale round-robin keys from earlier development versions
+    storage.surface_index  = nil
+    storage.display_index  = nil
+    storage.surfaces       = nil
+    storage.updates_per_tick = nil
+    if migrated > 0 then
+        log(("dsc: migrated %d storage keys from sigd prefix"):format(migrated))
+    end
+end
+
+--------------------------------------------------
+-- LIFECYCLE
 --------------------------------------------------
 
 script.on_init(function()
-    ensure_storage()
-    rescan_all_surfaces()
-    storage._sigd_has_sa = detect_space_age()
-    log(("sigd: detected_space_age=%s"):format(storage._sigd_has_sa and "yes" or "no"))
+    storage._dsc_has_sa = detect_space_age()
+    dsc_events.on_init()
+    dsc_events.rescan()
+end)
+
+script.on_load(function()
+    dsc_events.on_load()
 end)
 
 script.on_configuration_changed(function()
-    ensure_storage()
-    rescan_all_surfaces()
-    storage._sigd_has_sa = detect_space_age()
-    log(("sigd: detected_space_age=%s"):format(storage._sigd_has_sa and "yes" or "no"))
+    migrate_storage()
+    storage._dsc_has_sa = detect_space_age()
+    dsc_events.on_init()
+    dsc_events.rescan()
+end)
+
+--------------------------------------------------
+-- SETTINGS CHANGED
+--------------------------------------------------
+
+script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
+    if event.setting and event.setting:find("^dsc%-") then
+        dsc_events.on_init()
+    end
 end)
 
 --------------------------------------------------
@@ -122,42 +129,13 @@ local function on_removed(event)
     remove_display(event.entity)
 end
 
-script.on_event(defines.events.on_built_entity, on_created, filter)
-script.on_event(defines.events.on_robot_built_entity, on_created, filter)
-script.on_event(defines.events.on_entity_cloned, on_created, filter)
-script.on_event(defines.events.script_raised_built, on_created, filter)
-script.on_event(defines.events.script_raised_revive, on_created, filter)
+script.on_event(defines.events.on_built_entity,        on_created, filter)
+script.on_event(defines.events.on_robot_built_entity,  on_created, filter)
+script.on_event(defines.events.on_entity_cloned,       on_created, filter)
+script.on_event(defines.events.script_raised_built,    on_created, filter)
+script.on_event(defines.events.script_raised_revive,   on_created, filter)
 
 script.on_event(defines.events.on_player_mined_entity, on_removed, filter)
-script.on_event(defines.events.on_robot_mined_entity, on_removed, filter)
-script.on_event(defines.events.on_entity_died, on_removed, filter)
-script.on_event(defines.events.script_raised_destroy, on_removed, filter)
-
---------------------------------------------------
--- UPDATE LOOP
---------------------------------------------------
-
-script.on_nth_tick(30, function()
-    local displays = storage.displays
-    if not displays then return end
-
-    for _, surface_displays in pairs(displays) do
-        for unit, entity in pairs(surface_displays) do
-            if entity and entity.valid then
-                display.update_display(entity)
-            else
-                surface_displays[unit] = nil
-            end
-        end
-    end
-end)
-
---------------------------------------------------
--- PERIODIC RESCAN (Space Age only)
---------------------------------------------------
-
-script.on_nth_tick(300, function()
-    if storage._sigd_has_sa then
-        rescan_all_surfaces()
-    end
-end)
+script.on_event(defines.events.on_robot_mined_entity,  on_removed, filter)
+script.on_event(defines.events.on_entity_died,         on_removed, filter)
+script.on_event(defines.events.script_raised_destroy,  on_removed, filter)
