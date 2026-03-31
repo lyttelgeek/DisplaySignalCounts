@@ -5,7 +5,9 @@
 -  **Display panel messages**
 -  **Programmable speaker alert messages**
 
-It supports:
+---
+
+## Features:
 
 - Multiple placeholders per message
 - Inline signal selection (including quality)
