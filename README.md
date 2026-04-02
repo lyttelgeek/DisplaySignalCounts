@@ -118,7 +118,7 @@ UK spelling supported:
 
 - Requires **Factorio 2.0+**
 - Space Age compatible (not required)
-- Remote integration witn [Widescreen Display Panels](https://github.com/lyttelgeek/WidescreenDisplayPanels)
+- Features remote integration witn [Widescreen Display Panels](https://github.com/lyttelgeek/WidescreenDisplayPanels)
 
 ---
 
