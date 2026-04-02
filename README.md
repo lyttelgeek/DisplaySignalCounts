@@ -52,7 +52,7 @@ Included global setting option for default count display: exact or condensed SI 
 
 ---
 
-##  Formatting Mode Overrides (only affects following placeholder)
+##  Formatting Mode Overrides (stacks with modifiers, only affects the following placeholder)
 
 | Directive | Meaning |
 |-----------|----------|
