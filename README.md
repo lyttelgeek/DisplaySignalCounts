@@ -5,7 +5,7 @@
 -  **Display panel messages**
 -  **Programmable speaker alert messages**
 
-  ![Counts](thumbnail.png)
+   ![Counts](thumbnail.png)
 
 ---
 
